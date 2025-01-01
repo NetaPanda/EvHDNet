@@ -1,0 +1,160 @@
+{
+    "name": "train_dna_evhdnet",
+    "phase": "train", // train or test
+    "gpu_ids": [
+       0
+    ],
+    "distributed": true,
+    "path": { //set the path
+        "log": "logs",
+        "tb_logger": "tb_logger",
+        "results": "results",
+        "checkpoint": "checkpoint",
+        "resume_state": null
+	
+    },
+    "datasets": {
+        "train": {
+            "name": "deblur_event_ximea",
+            "dataroot": "/home/system/multispectral/event_ximea/data",
+            "batch_size": 32, 
+            "batch_multiplier": 1,
+            "patch_size": 128,
+            "patch_crops_per_img": 20, 
+            "num_workers": 0,
+            "use_shuffle": true,
+            "data_len": -1 //  -1 means use all data
+        },
+        "test": {
+            "name": "deblur_event_ximea",
+            "dataroot": "/home/system/multispectral/event_ximea/data",
+            "patch_size": -1,
+            "patch_crops_per_img": 1, // must be 1 or error will occur
+            "data_len": 5 // data length in test
+        },
+        "val": {
+            "name": "deblur_event_ximea",
+            "dataroot": "/home/system/multispectral/event_ximea/data",
+            "patch_size": -1,
+            "patch_crops_per_img": 1, // must be 1 or error will occur
+            "data_len": 5 // data length in test
+        }
+    },
+    "model": {
+        "which_model_G": "sr3", // use the ddpm or sr3 network structure
+        "finetune_norm": false,
+        "unet": {
+            "in_channel": 1, 
+            "out_channel": 1,
+            "inner_channel": 16,
+            "channel_multiplier": [
+                1,
+                2,
+                3,
+                4
+            ],
+            "attn_res": [
+                
+            ],
+            "res_blocks": 2,
+            "dropout": 0.1
+        },
+        "ddpm_init_net": {
+            "in_channel": 1, // 1 blur hsi
+            "out_channel": 1,
+            "inner_channel": 32,
+            "channel_multiplier": [
+                1,
+                2,
+                3,
+                4
+            ],
+            "attn_res": [
+                
+            ],
+            "res_blocks": 2,
+            "dropout": 0.0
+        },
+        "intergrate_net": { // event integration network
+            "in_channel": 6, 
+            "out_channel": 1,
+            "inner_channel": 16,
+            "channel_multiplier": [
+                1,
+                2,
+                3,
+                4
+            ],
+            "attn_res": [
+                
+            ],
+            "res_blocks": 2,
+            "dropout": 0.0
+        },
+        "standalone_encoder": {
+            "in_channel": 7, // 6 event_bin, 1 blur hsi
+            "out_channel": 1,
+            "inner_channel": 16,
+            "channel_multiplier": [
+                1,
+                2,
+                3,
+                4
+            ],
+            "attn_res": [
+                
+            ],
+            "res_blocks": 2,
+            "dropout": 0.0
+        },
+        "beta_schedule": { 
+            "train": {
+                "schedule": "linear",
+                "n_timestep": 2000,
+                "linear_start": 1e-6,
+                "linear_end": 1e-2
+            },
+            "val": {
+                "schedule": "linear",
+                "n_timestep": 2000,
+                "linear_start": 1e-6,
+                "linear_end": 1e-2
+            },
+            "test": {
+                "schedule": "linear",
+                "n_timestep": 2000,
+                "linear_start": 1e-6,
+                "linear_end": 1e-2
+            }
+        },
+        "diffusion": {
+            "image_size": 128,
+            "channels": 1, //sample channel
+            "conditional": false 
+        }
+    },
+    "train": {
+	"warmup_step": 1000,
+        "n_iter": 300000,
+        "val_freq": 100000000000,
+        "save_checkpoint_freq": 10000,
+        "print_freq": 200,
+        "optimizer": {
+            "type": "adam",
+            "lr": 2e-4
+        },
+        "ema_scheduler": { // not used now
+            "step_start_ema": 5000,
+            "update_ema_every": 1,
+            "ema_decay": 0.9999
+        },
+        "scheduler": { // lr scheduler
+            "type": "TrueCosineAnnealingLR",
+            "T_max": 300000,
+	    "eta_min": 1e-7
+        }
+    },
+    "wandb": {
+        "project": "event_ximia_deblur"
+    }
+}
