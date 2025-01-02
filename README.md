@@ -7,6 +7,13 @@ Download the real-captured Event-SMHC Frame Deblurring dataset from BaiduNetDisk
 [Dataset Link](https://pan.baidu.com/s/1YCQjS6ucHLvaJdYHiD9NzQ?pwd=7dvn)  
 Password: `7dvn`
 
+The dataset contains blur/gt sharp frames and corresponding event voxels.
+
+Besides event voxels, we also provide raw events (and blur/gt frames) for the train/test/validation sets:
+[Raw Data Link](https://pan.baidu.com/s/1Nu4W4PW6YDQBgpwayZg2NA?pwd=i5ek)
+Password: `i5ek`
+
+
 ### Step 2: Extract the Dataset
 Extract the `train` and `test` tar files into the same directory.
 
