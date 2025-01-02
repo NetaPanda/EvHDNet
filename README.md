@@ -9,7 +9,7 @@ Password: `7dvn`
 
 The dataset contains blur/gt sharp frames and corresponding event voxels.
 
-Besides event voxels, we also provide raw events (and blur/gt frames) for the train/test/validation sets:
+Besides event voxels, we also provide raw events (and blur/gt frames) for the train/test/validation sets:  
 [Raw Data Link](https://pan.baidu.com/s/1Nu4W4PW6YDQBgpwayZg2NA?pwd=i5ek)
 Password: `i5ek`
 
